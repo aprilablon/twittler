@@ -64,8 +64,23 @@ body {
     padding-right: 15px;
     vertical-align: top;
 }
+.user {
+	text-align: left;
+	padding-left: 15px;
+    padding-right: 15px;
+    vertical-align: top;
+}
+.user:hover {
+  color: #a9b2b9;
+}
+.show {
+	font-weight: bold;
+}
 .title {
 	text-align: center;
+}
+.title:hover {
+  color: #a9b2b9;
 }
 
 /*
@@ -82,11 +97,11 @@ body {
          -box-sizing: border-box;
 }
 .col-1-3 {
-  padding-left: 380px;
-  padding-right: 100px;
+  padding-left: 410px;
+  padding-right: 80px;
   display: inline-block;
   vertical-align: top;
-  width: 33%;
+  width: 35%;
 }
 .col-2-3 {
   padding-left: 15px;
@@ -94,6 +109,9 @@ body {
   display: inline-block;
   vertical-align: top;
   width: 60%;
+}
+.hide {
+  display: none;
 }
 .grid {
   margin: 0 auto;
@@ -153,7 +171,5 @@ h5 {
   font-weight: 400;
   text-transform: uppercase;
 }
-p:hover {
-  color: #a9b2b9;
-}
+
 
