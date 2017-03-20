@@ -103,19 +103,26 @@
           $tweet.prependTo($displayTweets);
           index -= 1;
         }
-/*
+
         var updateTime = function() {
           $('.col-2-3').find('.time').each(function() {
-            //var newTime = moment(streams.home[index].created_at).fromNow();
-            //$(this).text('newTime');
-            alert($(this).text);
+            var thisUsername = $(this).closest('.tweet').find('.user').text().split('');
+            thisUsername.shift();
+            thisUser = thisUsername.join('');
+            thisMessage = $(this).closest('.tweet').find('.text').text();
+            for (var i = 0; i < streams.users[thisUser].length; i++) {
+              if (streams.users[thisUser][i].message === thisMessage) {
+                var thisTime = streams.users[thisUser][i].created_at;
+              }
+            }
+            var newTime = moment(thisTime).fromNow();
+            $(this).closest('.tweet').find('.time').text(newTime);
           });
         };
 
         updateTime();
-          
+        
         setInterval(updateTime, 60000);
-*/
 
         $('.col-2-3').on('click', '.user', function() {
           $('.tweet').addClass('hide');
@@ -144,8 +151,13 @@
 
         $('button').on('click', function() {
           var message = document.getElementById('tweet-text').value;
-          var newIndex = streams.home.length - 1;
-          var newTime = moment(new Date()).fromNow();
+          var newTime = new Date();
+          var newTweet = {};
+          newTweet.user = visitor;
+          newTweet.message = message;
+          newTweet.created_at = newTime;
+          addTweet(newTweet);
+          $('input[type="text"]').val('');
           var $newTweet = $('<section></section>');
           var $newTweetUser = $('<p></p>');
           var $newTweetText = $('<p></p>');
@@ -156,7 +168,7 @@
           $newTweetTime.addClass('time');
           $newTweetText.addClass('text');
           $newTweetUser.text('@' + visitor);
-          $newTweetTime.text(newTime);
+          $newTweetTime.text(moment(newTime).fromNow());
           $newTweetText.text(message);
           $newTweetUser.prependTo($newTweet);
           $newTweetTime.appendTo($newTweet);
