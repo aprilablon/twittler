@@ -3,6 +3,7 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="moment.js"></script>
     <link rel="stylesheet" href="stylesheet.css">
   </head>
   <body>
@@ -19,6 +20,15 @@
         $header.addClass('row');
         $header.addClass('title');
         $header.appendTo($body);
+
+        var $input = $('<form></form>');
+        $input.addClass('row-alt-alt');
+        var $type = $('<input type="text" id="tweet-text">');
+        var $button = $('<button type="button"></button>');
+        $button.text('Tweet')
+        $type.appendTo($input);
+        $button.appendTo($input);
+        $input.appendTo($body);
 
         var $info = $('<section></section>');
         $info.addClass('row-alt');
@@ -37,12 +47,14 @@
 
         var $listTweets = $('<section></section>');
         var $tweetsTitle = $('<h5></h5>')
+        var $displayTweets = $('<div></div>');
         $tweetsTitle.text('Tweets');
         $tweetsTitle.prependTo($listTweets);
+        $displayTweets.appendTo($listTweets);
         $listTweets.addClass('col-2-3');
         $listTweets.appendTo($grid);
 
-        var userIndex = users.length - 1;
+        var userIndex = users.length - 2;
         while(userIndex >= 0) {
           var user = users[userIndex];
           var $displayName = $('<p></p>');
@@ -52,39 +64,58 @@
           $displayName.appendTo($listUsers);
           userIndex -= 1;
         }
+
+        var visitor = users[users.length - 1];
+
+        var $listVisitor = $('<section></section>');
+        var $visitorTitle = $('<h5></h5>')
+        $visitorTitle.text('Signed In As');
+        $visitorTitle.prependTo($listVisitor);
+        $listVisitor.addClass('col-3-3');
+        $listVisitor.appendTo($grid);
+
+        var $displayVisitor = $('<p></p>');
+        $displayVisitor.addClass('user');
+        $displayVisitor.addClass(visitor);
+        $displayVisitor.text('@' + visitor);
+        $displayVisitor.appendTo($listVisitor);
         
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var time = streams.home[index].created_at;
+          var time = moment(streams.home[index].created_at).fromNow();
           var user = tweet.user;
           var $tweet = $('<section></section>');
           var $tweetUser = $('<p></p>');
           var $tweetText = $('<p></p>');
+          var $tweetTime = $('<p></p>');
           $tweet.addClass('tweet');
           $tweet.addClass(user);
           $tweetUser.addClass('user');
+          $tweetTime.addClass('time');
           $tweetText.addClass('text');
           $tweetUser.text('@' + user);
-          var hours = time.getHours();
-          var minutes = time.getMinutes();
-          var meridian = ' AM';
-          if (hours >= 12) {
-            meridian = ' PM';
-          }
-          if (hours >= 13) {
-            hours -= 12;
-          }
-          if (minutes < 10) {
-            var mins = [0, minutes];
-            minutes = mins.join('');
-          }
-          $tweetText.text(hours + ':' + minutes + meridian + ': ' + tweet.message);
+          $tweetTime.text(time);
+          $tweetText.text(tweet.message);
           $tweetUser.prependTo($tweet);
+          $tweetTime.appendTo($tweet);
           $tweetText.appendTo($tweet);
-          $tweet.appendTo($listTweets);
+          $tweet.prependTo($displayTweets);
           index -= 1;
         }
+/*
+        var updateTime = function() {
+          $('.col-2-3').find('.time').each(function() {
+            //var newTime = moment(streams.home[index].created_at).fromNow();
+            //$(this).text('newTime');
+            alert($(this).text);
+          });
+        };
+
+        updateTime();
+          
+        setInterval(updateTime, 60000);
+*/
 
         $('.col-2-3').on('click', '.user', function() {
           $('.tweet').addClass('hide');
@@ -100,8 +131,37 @@
           $('.tweet').filter(userName).removeClass('hide');
         });
 
+        $('.col-3-3').on('click', '.user', function() {
+          $('.tweet').addClass('hide');
+          var userClass = $(this).attr('class').split(' ');
+          var userName = '.' + userClass[1];
+          $('.tweet').filter(userName).removeClass('hide');
+        });
+
         $('.title').on('click', function() {
           $('.tweet').removeClass('hide');
+        });
+
+        $('button').on('click', function() {
+          var message = document.getElementById('tweet-text').value;
+          var newIndex = streams.home.length - 1;
+          var newTime = moment(new Date()).fromNow();
+          var $newTweet = $('<section></section>');
+          var $newTweetUser = $('<p></p>');
+          var $newTweetText = $('<p></p>');
+          var $newTweetTime = $('<p></p>');
+          $newTweet.addClass('tweet');
+          $newTweet.addClass(visitor);
+          $newTweetUser.addClass('user');
+          $newTweetTime.addClass('time');
+          $newTweetText.addClass('text');
+          $newTweetUser.text('@' + visitor);
+          $newTweetTime.text(newTime);
+          $newTweetText.text(message);
+          $newTweetUser.prependTo($newTweet);
+          $newTweetTime.appendTo($newTweet);
+          $newTweetText.appendTo($newTweet);
+          $newTweet.prependTo($displayTweets);
         });
 
       });
